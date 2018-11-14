@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.example.videorecordutils.widget.SendView;
 import com.example.videorecordutils.widget.VideoProgressBar;
@@ -47,6 +48,7 @@ public class VideoRecorderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.BlackTheme);
+        BarUtils.setStatusBarVisibility(getWindow(),false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
         initView();
