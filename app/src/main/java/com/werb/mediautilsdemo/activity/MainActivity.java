@@ -55,13 +55,11 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.img_video);
         ttv = findViewById(R.id.ttv_main_play);
         videoUrl = findViewById(R.id.bt_main_playUrlVideo);
-
         video.setOnClickListener(videoClick);
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaUtils.getInstance().start2PlayVideo(MainActivity.this,MediaUtils.getInstance().getTargetFilePath(),false);
+                MediaUtils.getInstance().setFirstFrameBitmap(MediaUtils.getVideoBitmap(MediaUtils.getInstance().getTargetFilePath())).start2PlayVideo(MainActivity.this,MediaUtils.getInstance().getTargetFilePath(),false);
 //                MediaUtils.getInstance().startPlayVideo(new Surface(ttv.getSurfaceTexture()),false);
             }
         });

@@ -1,1 +1,1 @@
-include ':app', ':videorecordutils', ':videorecord'
+include ':app', ':videorecordutils'

@@ -566,6 +566,16 @@ public class MediaUtils {
         context.startActivity(intent);
     }
 
+    private Bitmap firstFrameBitmap;
+
+    public MediaUtils setFirstFrameBitmap(Bitmap firstFrameBitmap){
+        this.firstFrameBitmap = firstFrameBitmap;
+        return this;
+    }
+
+    public Bitmap getFirstFrameBitmap(){
+        return firstFrameBitmap;
+    }
 
     //开启播放视频
     public void start2PlayVideo(Context context,String videoLink,boolean isUrl){
@@ -579,6 +589,7 @@ public class MediaUtils {
             }
             context.startActivity(intent);
         }
+
     }
 
 }

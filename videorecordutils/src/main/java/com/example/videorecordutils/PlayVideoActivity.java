@@ -3,6 +3,7 @@ package com.example.videorecordutils;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,6 +24,8 @@ public class PlayVideoActivity extends Activity {
     OrientationUtils orientationUtils;
 
     private String videoLink;
+
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +49,13 @@ public class PlayVideoActivity extends Activity {
 
         videoPlayer.setUp(videoLink, true, "");
 
-
         //增加封面
-        ImageView imageView = new ImageView(this);
+        imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.ic_check_black_36dp);
+        Bitmap firstFrameBitmap = MediaUtils.getInstance().getFirstFrameBitmap();
+        if (firstFrameBitmap!=null){
+            imageView.setImageBitmap(firstFrameBitmap);
+        }
         videoPlayer.setThumbImageView(imageView);
         //增加title
         videoPlayer.getTitleTextView().setVisibility(View.VISIBLE);
@@ -93,6 +98,7 @@ public class PlayVideoActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
+        MediaUtils.getInstance().setFirstFrameBitmap(null);
         if (orientationUtils != null)
             orientationUtils.releaseListener();
     }
