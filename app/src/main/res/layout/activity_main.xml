@@ -29,8 +29,14 @@
 
     <TextureView
         android:id="@+id/ttv_main_play"
-        android:layout_width="300dp"
-        android:layout_height="300dp" />
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
+
+    <Button
+        android:text="播放url视频文件"
+        android:id="@+id/bt_main_playUrlVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

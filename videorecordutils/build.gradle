@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
 
 
@@ -23,9 +24,24 @@ android {
 
 }
 
+publish {
+    repoName = "maven"  /*指定仓库名称，当传入maven时，无需设置*/
+    userOrg = 'ypeifeng'
+    groupId = 'com.ypf'
+    artifactId = 'videoUtils'
+    publishVersion = '1.0.1'
+    desc = 'this is a video recorder utils'
+    website = 'https://github.com/ypeifeng/videoUtils.git'
+}
+
+
+
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.blankj:utilcode:1.21.2'
+    api('com.blankj:utilcode:1.21.2')
+    api 'com.shuyu:GSYVideoPlayer:6.0.1'
 
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

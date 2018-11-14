@@ -72,16 +72,6 @@ public class VideoRecorderActivity extends AppCompatActivity {
 
             initListener();
 
-        }else if (viewType == VIDEO_PLAY){ //播放模式
-            viewRoot.setVisibility(View.GONE);
-            final String stringExtra = intent.getStringExtra(MediaUtils.FILE_PATH);
-            mediaUtils.startPlayVideo(stringExtra,surfaceRoot,true);
-            surfaceRoot.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
         }
 
     }
@@ -263,6 +253,10 @@ public class VideoRecorderActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             //释放播放资源
+            MediaUtils.VideoRecorderCallBack videoRecorderCallBack = MediaUtils.getInstance().getVideoRecorderCallBack();
+            if (videoRecorderCallBack!=null){
+                videoRecorderCallBack.recorderSuccessful();
+            }
             MediaUtils.getInstance().release();
             finish();
         }

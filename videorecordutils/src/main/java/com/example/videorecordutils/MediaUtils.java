@@ -27,6 +27,7 @@ public class MediaUtils {
     private static final String TAG = "MediaUtils";
     public static final String VIDEO_TYPE = "videoType";
     public static final String FILE_PATH = "filePath";
+    public static final String VIDEO_URL = "video_url";
     public static final int MEDIA_AUDIO = 0;
     public static final int MEDIA_VIDEO = 1;
     private MediaRecorder mMediaRecorder;
@@ -110,7 +111,7 @@ public class MediaUtils {
     }
 
     public boolean deleteTargetFile() {
-        if (targetFile.exists()) {
+        if (targetFile!=null && targetFile.exists()) {
             return targetFile.delete();
         } else {
             return false;
@@ -164,7 +165,7 @@ public class MediaUtils {
             try {
                 mMediaRecorder.stop();
             } catch (RuntimeException e) {
-                targetFile.delete();
+                deleteTargetFile();
             }
             releaseMediaRecorder();
             if (mCamera != null)
@@ -205,9 +206,7 @@ public class MediaUtils {
                 mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
             }
             targetFile = new File(targetDir,targetName);
-            if (targetFile.exists()){
-                targetFile.delete();
-            }
+            deleteTargetFile();
             boolean newFile = targetFile.createNewFile();
             if (newFile){
                 LogUtils.dTag("tag_ypf","文件创建成功！");
@@ -260,17 +259,13 @@ public class MediaUtils {
                 mMediaRecorder.stop();
             } catch (RuntimeException r) {
                 Log.d("Recorder", "RuntimeException: stop() is called immediately after start()");
-                if (targetFile.exists()) {
-                    //不保存直接删掉
-                    targetFile.delete();
-                }
+                //不保存直接删掉
+                deleteTargetFile();
             } finally {
                 releaseMediaRecorder();
             }
-            if (targetFile.exists()) {
-                //不保存直接删掉
-                targetFile.delete();
-            }
+            //不保存直接删掉
+            deleteTargetFile();
         }
     }
 
@@ -372,9 +367,7 @@ public class MediaUtils {
     public void reTranscribe() {
         stopMediaPlayer();
         if (targetFile!=null){
-            if (targetFile.exists()){
-                targetFile.delete();
-            }
+            deleteTargetFile();
             targetFile=null;
         }
         if (mSurfaceView != null) {
@@ -472,48 +465,6 @@ public class MediaUtils {
         }
     }
 
-    public void startPlayVideo(Surface mediaSurface, boolean isLoop) {
-        try {
-            startMediaPlayer(mediaSurface, isLoop,null);
-        } catch (NullVideoFileException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startPlayVideo(final String filePath, final TextureView mediaSurface, final boolean isLoop) {
-        try {
-
-            mediaSurface.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-                @Override
-                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                    try {
-                        startMediaPlayer(new Surface(mediaSurface.getSurfaceTexture()), isLoop,filePath);
-                    } catch (NullVideoFileException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                    MediaUtils.getInstance().release();
-                    return false;
-                }
-
-                @Override
-                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void startMediaPlayer(Surface mediaSurface, final boolean isLoop,String filePath) throws NullVideoFileException {
 
         if (targetFile == null || !targetFile.exists()) {
@@ -590,15 +541,20 @@ public class MediaUtils {
         stopMediaPlayer();
         releaseCamera();
         releaseMediaRecorder();
-        if (videoRecorderCallBack!=null){
-            videoRecorderCallBack.recorderSuccessful();
-        }
     }
 
     private VideoRecorderCallBack videoRecorderCallBack;
 
     public interface VideoRecorderCallBack{
         void recorderSuccessful();
+    }
+
+    public VideoRecorderCallBack getVideoRecorderCallBack() {
+        return videoRecorderCallBack;
+    }
+
+    public void setVideoRecorderCallBack(VideoRecorderCallBack videoRecorderCallBack) {
+        this.videoRecorderCallBack = videoRecorderCallBack;
     }
 
     //开启视频录制
@@ -610,13 +566,17 @@ public class MediaUtils {
         context.startActivity(intent);
     }
 
-    //开启视频播放
-    public void start2VideoPlay(Context context,String filePath){
-        if (context!=null && !TextUtils.isEmpty(filePath)){
+
+    //开启播放视频
+    public void start2PlayVideo(Context context,String videoLink,boolean isUrl){
+        if (context!=null && !TextUtils.isEmpty(videoLink)){
             Intent intent = new Intent();
-            intent.setClass(context, VideoRecorderActivity.class);
-            intent.putExtra(VIDEO_TYPE,VideoRecorderActivity.VIDEO_PLAY);
-            intent.putExtra(FILE_PATH,filePath);
+            intent.setClass(context, PlayVideoActivity.class);
+            if (isUrl){
+                intent.putExtra(VIDEO_URL,videoLink);
+            }else {
+                intent.putExtra(FILE_PATH,videoLink);
+            }
             context.startActivity(intent);
         }
     }

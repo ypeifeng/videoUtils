@@ -23,11 +23,13 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
-    private Button video;
+    private Button video,videoUrl;
 
     private ImageView imageView;
 
     private TextureView ttv;
+
+    private String url = "https://img.gulltour.com/video/weibo/20181113/1542100526668578.mp4";
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -52,14 +54,22 @@ public class MainActivity extends AppCompatActivity {
         video = (Button) findViewById(R.id.btn_video);
         imageView = (ImageView) findViewById(R.id.img_video);
         ttv = findViewById(R.id.ttv_main_play);
+        videoUrl = findViewById(R.id.bt_main_playUrlVideo);
 
         video.setOnClickListener(videoClick);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediaUtils.getInstance().start2VideoPlay(MainActivity.this,MediaUtils.getInstance().getTargetFilePath());
+                MediaUtils.getInstance().start2PlayVideo(MainActivity.this,MediaUtils.getInstance().getTargetFilePath(),false);
 //                MediaUtils.getInstance().startPlayVideo(new Surface(ttv.getSurfaceTexture()),false);
+            }
+        });
+
+        videoUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MediaUtils.getInstance().start2PlayVideo(MainActivity.this,url,true);
             }
         });
     }
@@ -86,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         MediaUtils.getInstance().start2VideoRecorder(MainActivity.this, new MediaUtils.VideoRecorderCallBack() {
             @Override
             public void recorderSuccessful() {
+                Log.d("tag_ypf_checkPermission","录制完成，实现回调");
                 handler.sendEmptyMessage(0x100000);
             }
         });
