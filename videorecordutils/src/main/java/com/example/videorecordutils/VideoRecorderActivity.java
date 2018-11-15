@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.example.videorecordutils.widget.SendView;
 import com.example.videorecordutils.widget.VideoProgressBar;
@@ -137,18 +138,20 @@ public class VideoRecorderActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_UP:
                         if (!isCancel) {
-                            if (mProgress < 10) {
-                                //时间太短不保存
-                                mediaUtils.stopRecordUnSave();
-                                Toast.makeText(VideoRecorderActivity.this, "时间太短", Toast.LENGTH_SHORT).show();
-                                stopView(false);
-                                break;
-                            } else {
-                                //停止录制
-                                mediaUtils.stopRecordSave();
-                                stopView(true);
-                                mediaUtils.releaseCamera();
-                                mediaUtils.startPlayVideo();
+                            if (MediaUtils.getInstance().isRecording()){
+                                if (mProgress < 10) {
+                                    //时间太短不保存
+                                    mediaUtils.stopRecordUnSave();
+                                    Toast.makeText(VideoRecorderActivity.this, "时间太短", Toast.LENGTH_SHORT).show();
+                                    stopView(false);
+                                    break;
+                                } else {
+                                    //停止录制
+                                    mediaUtils.stopRecordSave();
+                                    stopView(true);
+                                    mediaUtils.releaseCamera();
+                                    mediaUtils.startPlayVideo();
+                                }
                             }
                         } else {
                             //现在是取消状态,不保存
@@ -174,6 +177,9 @@ public class VideoRecorderActivity extends AppCompatActivity {
         public void onProgressEndListener() {
             progressBar.setCancel(true);
             mediaUtils.stopRecordSave();
+            stopView(true);
+            mediaUtils.releaseCamera();
+            mediaUtils.startPlayVideo();
         }
     };
 
@@ -186,6 +192,8 @@ public class VideoRecorderActivity extends AppCompatActivity {
                     if (mediaUtils.isRecording()) {
                         mProgress = mProgress + 1;
                         sendMessageDelayed(handler.obtainMessage(0), 100);
+                    }else {
+                        LogUtils.i("录制停止");
                     }
                     break;
             }

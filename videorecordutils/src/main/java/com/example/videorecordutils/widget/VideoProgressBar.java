@@ -71,7 +71,7 @@ public class VideoProgressBar extends View {
             isCancel = false;
             return;
         }
-        int mMaxProgress = 100;
+        int mMaxProgress = 160;
         if(progress > 0 && progress < mMaxProgress){
             mRecordPaint.setColor(Color.rgb(0x00, 0xc0, 0x7f));
             canvas.drawArc(mRectF, -90, ((float) progress / mMaxProgress) * 360, false, mRecordPaint);

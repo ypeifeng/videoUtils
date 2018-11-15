@@ -34,7 +34,7 @@ publish {
     userOrg = 'ypeifeng'
     groupId = 'com.ypf'
     artifactId = 'videoUtils'
-    publishVersion = '1.0.4'
+    publishVersion = '1.0.5'
     desc = 'this is a video recorder utils'
     website = 'https://github.com/ypeifeng/videoUtils.git'
 }
